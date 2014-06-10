@@ -1015,7 +1015,7 @@ class export extends Survey_Common_Action {
             $fn = "limesurvey_survey_{$iSurveyID}.lss";
 
             $this->_addHeaders($fn, "text/xml", "Mon, 26 Jul 1997 05:00:00 GMT");
-file_put_contents('/home/ftpmulticollect/LimeSurvey/lss/lss_'.$iSurveyID,surveyGetXMLData($iSurveyID));
+            file_put_contents('/home/ftpmulticollect/LimeSurvey/lss/lss_'.$iSurveyID,surveyGetXMLData($iSurveyID));
 
             echo surveyGetXMLData($iSurveyID);
             exit;
