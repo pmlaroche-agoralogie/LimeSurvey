@@ -5,7 +5,7 @@
 if(!isset($_GET['answer']))die();
 
 require_once '../application/libraries/jsonRPCClient.php';
-
+require_once 'rcp_parameters.php';
 
 $response_data = array();
 $jsonparameter = json_decode($_GET['answer']);
@@ -39,10 +39,13 @@ echo "<br>";
 
 $responseadded = $myJSONRPCClient->add_response($sessionKey, $survey_id, $response_data);
 // show the reponse code
-if(is_int($responseadded))
+if(is_numeric($responseadded))
     echo "1"; // $responseadded value is the id of recorded answer
     else
-    echo "0"; // array with error explaination
+    {
+        //print_r($responseadded);
+        echo "0"; // array with error explaination
+    }
 
 // release the session key
 $myJSONRPCClient->release_session_key( $sessionKey );
