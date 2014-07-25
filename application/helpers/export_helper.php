@@ -675,12 +675,22 @@ function surveyGetXMLStructure($iSurveyID, $xmlwriter, $exclude=array())
     buildXMLFromQuery($xmlwriter,$gquery);
 
     //Questions
+    /*
     $qquery = "SELECT *
     FROM {{questions}}
     WHERE sid=$iSurveyID and parent_qid=0
     ORDER BY qid";
     buildXMLFromQuery($xmlwriter,$qquery);
-
+*/
+    
+    $qquery = "SELECT lime_questions.qid, lime_questions.parent_qid, lime_questions.sid, lime_questions.gid, lime_questions.type, lime_questions.title, lime_questions.question, lime_questions.preg, lime_questions.help, lime_questions.other, lime_questions.mandatory, lime_questions.question_order, lime_questions.language, lime_questions.scale_id, lime_questions.same_default, lime_questions.relevance
+     FROM {{questions}} , lime_groups
+    WHERE lime_questions.sid=$iSurveyID and lime_questions.parent_qid=0 and lime_questions.gid = lime_groups.gid
+    ORDER BY lime_groups.group_order ";//PLAROCHE qid before
+    
+  // echo $qquery;die();
+    buildXMLFromQuery($xmlwriter,$qquery);
+    
     //Subquestions
     $qquery = "SELECT *
     FROM {{questions}}
