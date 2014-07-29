@@ -1,12 +1,16 @@
 <?php
+// reference : http://manual.limesurvey.org/RemoteControl_2_API#add_response
+// http://stackoverflow.com/questions/23121669/limesurvey-remotecontrol2-api-any-add-response-php-examples
 
-// http://mcp.ocd-dbs-france.org/test/testrpcpl.php?answer={%22366836X99X43%22:%22A2%22,%22366836X106X105%22:%22A2%22,%22366836X101X116%22:%2254%22,%22sid%22:%22%20366836%22}
+// in case of problem, log everything !
+file_put_contents('logs/_CHANGETHIS_'.time().'txt',$_SERVER['REQUEST_URI']);
 
 if(!isset($_GET['answer']))die();
 
 require_once '../application/libraries/jsonRPCClient.php';
 require_once 'rcp_parameters.php';
 
+//get response data from POST input values
 $response_data = array();
 $jsonparameter = json_decode($_GET['answer']);
 foreach ($jsonparameter as $key => $value) {
@@ -22,32 +26,20 @@ $myJSONRPCClient = new jsonRPCClient( LS_BASEURL.'/admin/remotecontrol' );
 // receive session key
 $sessionKey= $myJSONRPCClient->get_session_key( LS_USER, LS_PASSWORD );
 
-/*
-// receive all ids and info of groups belonging to a given survey
-$groups = $myJSONRPCClient->list_groups( $sessionKey, $survey_id );
-print_r($groups, null );
-echo "<br>";
-
-$q = $myJSONRPCClient->list_questions( $sessionKey, $survey_id,99 );
-print_r($q, null );
-echo "<br>";
-*/
-
-//http://stackoverflow.com/questions/23121669/limesurvey-remotecontrol2-api-any-add-response-php-examples
-//get response data from FORM input values
-
+date_default_timezone_set('Europe/Paris');
+$response_data['submitdate'] = date('Y-m-d H:i:s',$jsonparameter->timestamp);
 
 $responseadded = $myJSONRPCClient->add_response($sessionKey, $survey_id, $response_data);
 // show the reponse code
 if(is_numeric($responseadded))
-    echo "1"; // $responseadded value is the id of recorded answer
+    {
+        echo "1"; // $responseadded value is the id of recorded answer
+    }
     else
     {
-        //print_r($responseadded);
         echo "0"; // array with error explaination
     }
 
 // release the session key
 $myJSONRPCClient->release_session_key( $sessionKey );
-
 ?>
