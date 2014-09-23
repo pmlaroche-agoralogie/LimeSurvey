@@ -27,7 +27,7 @@ le champ portant le nom destinataire au niveau de la page form.html */
 le champ portant le nom texte au niveau de la page form.htlm */
 //$message=" Coucou c'est philippe qui teste l'envoi de SMS !!! "; //$HTTP_POST_VARS['texte'];
 $message="Merci de répondre au questionnaire de l'application de suivi.";
-
+$debmessage="Appli de suivi : vous avez une session a ";
 // ouverture de la fonction soapi
 try
 {
@@ -53,10 +53,11 @@ try
 			WHERE tdt.enable = 1 
 			AND ts.ts_debut > NOW() 
 			AND ts.ts_debut < (NOW() + INTERVAL 1 DAY)
-			ORDER BY ts.ts_debut ASC";
+			ORDER BY ts.devideuid ASC, ts.creation DESC, ts.ts_debut ASC";
 	$resultsql = mysql_query($sql) or die(mysql_error());
-	//echo $sql;
+	echo $sql;
 
+	$currentDeviceID = "";
 	while ($row = mysql_fetch_array($resultsql,MYSQL_ASSOC)) {
 		$to =$row["tel"];
 		$delaysmsmin = ceil((strtotime($row["ts_debut"]) - time()) / 60) ;
@@ -65,27 +66,32 @@ try
 		qu emetteur, le desinataire se place ensuite ($to), la variable $message contient le texte du sms, le vide permet de laisser
 		les parametres par defaut, le "1" force l envoi du sms au format classique,
 		le sms est sauvegarde sur le portable client */
+                
+        $message = $debmessage.$row["ts_debut"];
+                
 		/*$result = $soap->telephonySmsSend(connexion_au_manager, "compte_sms", "numero_de_l_expediteur", "numero_du_destinataire", 
 						"message_du_sms", "temps_pour_l_envoi", "type_de_sms", "temps_avant_envoi", "priorite_du_sms");*/
 		/*temps_avant_envoi : en minutes !!!*/
-		//$result = $soap->telephonySmsSend($session, "$sms_compte", "$from", "$to", "$message", "", "1", "$delaysmsmin", "");
-		//echo "<br/>to:".$to."<br/>delai en minutes:".$delaysmsmin."<br/>";
-		
-		// affichage de l etat
-		echo "telephonySmsSend successfull\n";
-		
-		// affichage du resultat
-		//print_r($result);
-		/*echo "<pre>";
-		print_r($row);
-		echo "</pre>";*/
-
-		// on ferme la connexion au manager
-		$soap->logout($session);
-		// affichage de la reponse de fermeture de connexion
-		echo "logout successfull\n";
+        if ($currentDeviceID != $row["devideuid"])       
+        {
+			$result = $soap->telephonySmsSend($session, "$sms_compte", "$from", "$to", "$message", "", "1", "$delaysmsmin", "");
+        	//echo "<br/>$message <br> to:".$to."<br/>delai en minutes:".$delaysmsmin."<br/>";
+			$currentDeviceID = $row["devideuid"];
+			// affichage de l etat
+			echo "<br/>telephonySmsSend successfull\n <br>-----------------------<br><br>";
+			
+			// affichage du resultat
+			//print_r($result);
+			/*echo "<pre>";
+			print_r($row);
+			echo "</pre>";*/
+        }
 	}//boucle while sur resultat mysql
 	mysql_free_result($result);
+	// on ferme la connexion au manager
+    $soap->logout($session);
+    // affichage de la reponse de fermeture de connexion
+    echo "logout successfull\n";
 	
 }/*fin try*/
 
