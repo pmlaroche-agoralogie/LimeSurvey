@@ -1,4 +1,6 @@
 <?php
+// add one answer to a questionnaire 
+
 // reference : http://manual.limesurvey.org/RemoteControl_2_API#add_response
 // http://stackoverflow.com/questions/23121669/limesurvey-remotecontrol2-api-any-add-response-php-examples
 
@@ -37,7 +39,7 @@ if(is_numeric($responseadded))
     }
     else
     {
-        echo "0"; // array with error explaination
+        echo "0"; // $responseadded value is an array with error explaination
     }
 
 // release the session key
