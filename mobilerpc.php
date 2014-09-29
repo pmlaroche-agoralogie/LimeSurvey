@@ -5,7 +5,7 @@
 // http://stackoverflow.com/questions/23121669/limesurvey-remotecontrol2-api-any-add-response-php-examples
 
 // in case of problem, log everything !
-file_put_contents('logs/_CHANGETHIS_'.time().'txt',$_SERVER['REQUEST_URI']);
+file_put_contents('logs/_CHANGETHIS_'.time().'-'.rand(100000,900000).'txt',$_SERVER['REQUEST_URI']);
 
 if(!isset($_GET['answer']))die();
 
