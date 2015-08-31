@@ -2,10 +2,10 @@
 
 if(!isset($_GET['id']))die("1");
 $idtable = $_GET['id'];
-if($idtable!=347854)die();
+if(($idtable!=347854)&&($idtable!=436641))die();
 $nom_table = "lime_survey_".$idtable;
 include_once( 'rcp_parameters.php');
-
+include_once('tables_$idtable.php');
 mysql_connect("localhost", SQL_USER, SQL_PASSWORD) or die(mysql_error());
 mysql_select_db(SQL_DATABASE) or die(mysql_error());
 
